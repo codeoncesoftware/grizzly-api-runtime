@@ -1,0 +1,41 @@
+#!/usr/bin/env groovy
+
+pipeline {
+
+    agent any
+
+    tools {
+        jdk 'jdk17'
+        maven 'M3.6'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    stages {
+
+        stage('Create Release') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'bitbucket-jenkins-user', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    sh "git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@bitbucket.org/codeonceteam/grizzly-api-runtime.git"
+                    sh "mvn -B gitflow:release-start -DpushRemote=true -DallowSnapshots=true"
+                    sh "mvn versions:use-latest-versions"
+                    sh "git commit -a -m 'use-latest-versions for dependencies' --allow-empty"
+                    sh "git push"
+                    sh "mvn -B gitflow:release-finish -DpushRemote=true"
+                    sh "git checkout develop"
+                    sh "mvn versions:use-latest-snapshots"
+                    sh "git commit -a -m 'use-latest-snapshots for dependencies' --allow-empty"
+                    sh "git push"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

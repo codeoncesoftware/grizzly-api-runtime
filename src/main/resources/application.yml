@@ -1,0 +1,65 @@
+server:
+  port: 8040
+  max-http-request-header-size: 14800000
+
+spring:
+  data:
+    mongodb:
+      database: grizzly-api
+  application:
+    name: grizzly-api-runtime
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+        data.mongodb: WARN
+      mongodb.driver: INFO
+      codeonce: DEBUG
+
+app:
+  cache: #https://github.com/ben-manes/caffeine/wiki/Eviction
+    maximumSize: 200
+    expireAfterAccess: 7
+    timeUnit: DAYS
+    containerloadingPolicy: NEWEST
+  saxon:
+    hasLicense: false
+feign:
+  client:
+    config:
+      grizzly-api-runtime-function:
+        connectTimeout: 20000
+        readTimeout: 60000
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      group:
+        custom:
+          include: diskSpace,ping
+          show-components: always
+          show-details: always
+
+core:
+  oauth2:
+    grant_type: password #authorization_code,refresh_token,password,implicit
+    scope: read # read,write
+    token_validity: 36000
+    refresh_token_validity: 36000
+    url: http://localhost:8900

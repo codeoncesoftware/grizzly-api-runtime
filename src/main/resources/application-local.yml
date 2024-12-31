@@ -1,0 +1,67 @@
+docker: 'false'
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/grizzly-api
+  #SMTP Configuration
+  mail:
+    host: host
+    port: 465
+    username: username
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+            trust: host
+          ssl:
+            trust: host
+    from: noreply@grizzly-api.com
+    personal: "Grizzly API"
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: googleClientId
+            client-secret: googleClientSecret
+            redirect-uri: http://localhost:4900/runtime/iam/oauth2
+          github:
+            client-id: githubClientId
+            client-secret: githubClientSecret
+            redirect-uri: http://localhost:4900/runtime/iam/oauth2
+          facebook:
+            client-id: facebookClientId
+            client-secret: facebookClientSecret
+            redirect-uri: http://localhost:4900/runtime/iam/oauth2
+          linkedin:
+            client-id: linkedinClientId
+            client-secret: linkedinClientSecret
+            redirect-uri: http://localhost:4900/runtime/iam/oauth2
+          gitlab:
+            client-id: gitlabClientId
+            client-secret: gitlabClientSecret
+            redirect-uri: http://localhost:4900/runtime/iam/oauth2
+
+core-url: http://localhost:8090
+frontUrl: http://localhost:4900
+grizzly-runtime-function-url: http://localhost:8080
+
+
+grizzly:
+  client_id: grizzlyClientId
+  client_secret: 6062844cc312c4ca
+core:
+  oauth2:
+    client_id: grizzly-clientID
+    client_secret: grizzly-clientSecret
+    jwt_key: grizzly-jwtKey
+    url: http://localhost:8090
+
+resource-url: ./target/classes/transformation.zip
